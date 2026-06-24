@@ -32,29 +32,30 @@ Tracking remaining work for v1 and beyond.
 - [x] Account deletion (server function `deleteAccount` via `supabaseAdmin` + `requireSupabaseAuth`)
 - [x] `SECURITY.md` disclosure policy
 
-## Phase 5 — Voice Lab
-- [ ] `/voices` — list user's voice models with status badges
-- [ ] `/voices/new` — create model (name, source lang, target lang, character preset)
-- [ ] `/voices/$id` — model detail
-  - [ ] Upload samples (drag-drop, mic record) → `voice-samples/{uid}/{modelId}/...`
-  - [ ] Sample list with playback, transcript preview, delete
-  - [ ] "Train" button → server function dispatches to `RVC_ENDPOINT`, updates status
-  - [ ] "Test voice" — synth a phrase
-- [ ] Character presets seed (anime girl, deep villain, robotic, child, elderly, etc.)
+## Phase 5 — Voice Lab ✅
+- [x] `/voices` — list user's voice models with status badges
+- [x] `/voices/new` — create model (name, source lang, target lang, character preset)
+- [x] `/voices/$id` — model detail
+  - [x] Upload samples (drag-drop file picker, mic record) → `voice-samples/{uid}/{modelId}/...`
+  - [x] Sample list with playback (signed URL), delete
+  - [ ] Transcript preview per sample (deferred — needs Whisper)
+  - [x] "Train" button → server function dispatches to `RVC_ENDPOINT`, updates status
+  - [x] "Test voice" — synth a phrase via `synthesizePhrase`
+- [x] Character presets (anime girl, deep villain, robotic, child, elderly, narrator, newscaster) in `src/lib/voice-presets.ts`
 
-## Phase 6 — Live Voice Changer (browser demo)
-- [ ] `/studio` page
-- [ ] `MediaRecorder` mic capture in chunks (webm/mp4)
-- [ ] Server function `transcribeChunk()` → forwards to `WHISPER_ENDPOINT`
-- [ ] Server function `convertVoice()` → forwards to `RVC_ENDPOINT`
-- [ ] Streaming SSE for partial transcripts
-- [ ] Playback in browser via `AudioContext`
-- [ ] Push session row into `call_sessions`
+## Phase 6 — Live Voice Changer (browser demo) ✅
+- [x] `/studio` page rewritten as live changer
+- [x] `MediaRecorder` mic capture in 4s chunks (webm)
+- [x] Server function `transcribeChunk()` → forwards to `WHISPER_ENDPOINT`
+- [x] Server function `convertVoice()` → forwards to `RVC_ENDPOINT`
+- [ ] Streaming SSE for partial transcripts (current impl polls per chunk)
+- [x] Playback in browser via `Audio` element / `AudioContext`
+- [x] Push session row into `call_sessions` (start/end server fns)
+- [x] Consent checkbox before any session starts
 
 ## Phase 7 — Server functions & secrets
-- [ ] `src/lib/whisper.functions.ts` — `transcribeAudio({data})`
-- [ ] `src/lib/voice.functions.ts` — `convertVoice`, `synthesize`, `dispatchTraining`
-- [ ] `src/lib/voices.functions.ts` — CRUD wrappers using `requireSupabaseAuth`
+- [x] `src/lib/audio.functions.ts` — `transcribeChunk`, `convertVoice`, `startCallSession`, `endCallSession`
+- [x] `src/lib/voices.functions.ts` — `dispatchTraining`, `synthesizePhrase`
 - [ ] Add secrets via Lovable secret manager: `WHISPER_ENDPOINT`, `RVC_ENDPOINT`
 - [ ] Optional: `ELEVENLABS_API_KEY` fallback
 
@@ -80,7 +81,7 @@ Tracking remaining work for v1 and beyond.
 - [ ] Enable Supabase **Leaked Password Protection** (Auth settings)
 - [ ] Upgrade Postgres to latest patch (Supabase dashboard → Database → Upgrades)
 - [ ] Watermark generated audio (inaudible spread-spectrum tag) for traceability
-- [ ] Add explicit consent checkbox before any call session starts
+- [x] Add explicit consent checkbox before any call session starts
 
 ## Suggested Implementations / References
 

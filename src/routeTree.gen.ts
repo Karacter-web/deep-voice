@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedVoicesRouteImport } from './routes/_authenticated/voices'
 import { Route as AuthenticatedStudioRouteImport } from './routes/_authenticated/studio'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedVoicesNewRouteImport } from './routes/_authenticated/voices.new'
+import { Route as AuthenticatedVoicesIdRouteImport } from './routes/_authenticated/voices.$id'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -29,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedVoicesRoute = AuthenticatedVoicesRouteImport.update({
+  id: '/voices',
+  path: '/voices',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedStudioRoute = AuthenticatedStudioRouteImport.update({
   id: '/studio',
@@ -45,6 +53,16 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedVoicesNewRoute = AuthenticatedVoicesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AuthenticatedVoicesRoute,
+} as any)
+const AuthenticatedVoicesIdRoute = AuthenticatedVoicesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedVoicesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -52,6 +70,9 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/studio': typeof AuthenticatedStudioRoute
+  '/voices': typeof AuthenticatedVoicesRouteWithChildren
+  '/voices/$id': typeof AuthenticatedVoicesIdRoute
+  '/voices/new': typeof AuthenticatedVoicesNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -59,6 +80,9 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/studio': typeof AuthenticatedStudioRoute
+  '/voices': typeof AuthenticatedVoicesRouteWithChildren
+  '/voices/$id': typeof AuthenticatedVoicesIdRoute
+  '/voices/new': typeof AuthenticatedVoicesNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +92,31 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/studio': typeof AuthenticatedStudioRoute
+  '/_authenticated/voices': typeof AuthenticatedVoicesRouteWithChildren
+  '/_authenticated/voices/$id': typeof AuthenticatedVoicesIdRoute
+  '/_authenticated/voices/new': typeof AuthenticatedVoicesNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/profile' | '/settings' | '/studio'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/profile'
+    | '/settings'
+    | '/studio'
+    | '/voices'
+    | '/voices/$id'
+    | '/voices/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/profile' | '/settings' | '/studio'
+  to:
+    | '/'
+    | '/auth'
+    | '/profile'
+    | '/settings'
+    | '/studio'
+    | '/voices'
+    | '/voices/$id'
+    | '/voices/new'
   id:
     | '__root__'
     | '/'
@@ -82,6 +125,9 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/settings'
     | '/_authenticated/studio'
+    | '/_authenticated/voices'
+    | '/_authenticated/voices/$id'
+    | '/_authenticated/voices/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -113,6 +159,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/voices': {
+      id: '/_authenticated/voices'
+      path: '/voices'
+      fullPath: '/voices'
+      preLoaderRoute: typeof AuthenticatedVoicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/studio': {
       id: '/_authenticated/studio'
       path: '/studio'
@@ -134,19 +187,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/voices/new': {
+      id: '/_authenticated/voices/new'
+      path: '/new'
+      fullPath: '/voices/new'
+      preLoaderRoute: typeof AuthenticatedVoicesNewRouteImport
+      parentRoute: typeof AuthenticatedVoicesRoute
+    }
+    '/_authenticated/voices/$id': {
+      id: '/_authenticated/voices/$id'
+      path: '/$id'
+      fullPath: '/voices/$id'
+      preLoaderRoute: typeof AuthenticatedVoicesIdRouteImport
+      parentRoute: typeof AuthenticatedVoicesRoute
+    }
   }
 }
+
+interface AuthenticatedVoicesRouteChildren {
+  AuthenticatedVoicesIdRoute: typeof AuthenticatedVoicesIdRoute
+  AuthenticatedVoicesNewRoute: typeof AuthenticatedVoicesNewRoute
+}
+
+const AuthenticatedVoicesRouteChildren: AuthenticatedVoicesRouteChildren = {
+  AuthenticatedVoicesIdRoute: AuthenticatedVoicesIdRoute,
+  AuthenticatedVoicesNewRoute: AuthenticatedVoicesNewRoute,
+}
+
+const AuthenticatedVoicesRouteWithChildren =
+  AuthenticatedVoicesRoute._addFileChildren(AuthenticatedVoicesRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStudioRoute: typeof AuthenticatedStudioRoute
+  AuthenticatedVoicesRoute: typeof AuthenticatedVoicesRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStudioRoute: AuthenticatedStudioRoute,
+  AuthenticatedVoicesRoute: AuthenticatedVoicesRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
