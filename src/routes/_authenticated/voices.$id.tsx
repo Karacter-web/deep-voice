@@ -278,9 +278,20 @@ function VoiceDetailPage() {
 function SampleRow({
   sample,
   onDelete,
+  onTranscribe,
+  transcribing,
 }: {
-  sample: { id: string; filename: string | null; storage_path: string; size_bytes: number | null; duration_seconds: number | null };
+  sample: {
+    id: string;
+    filename: string | null;
+    storage_path: string;
+    size_bytes: number | null;
+    duration_seconds: number | null;
+    transcript: string | null;
+  };
   onDelete: () => void;
+  onTranscribe: () => void;
+  transcribing: boolean;
 }) {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
@@ -292,18 +303,29 @@ function SampleRow({
   }, [sample.storage_path]);
 
   return (
-    <div className="flex items-center gap-3 p-3">
-      <div className="flex-1 min-w-0">
-        <p className="text-sm truncate">{sample.filename ?? sample.storage_path.split("/").pop()}</p>
-        <p className="text-xs text-muted-foreground">
-          {sample.size_bytes ? `${Math.round(sample.size_bytes / 1024)} KB` : "—"}
-          {sample.duration_seconds ? ` · ${sample.duration_seconds.toFixed(1)}s` : ""}
-        </p>
+    <div className="flex flex-col gap-2 p-3">
+      <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm truncate">{sample.filename ?? sample.storage_path.split("/").pop()}</p>
+          <p className="text-xs text-muted-foreground">
+            {sample.size_bytes ? `${Math.round(sample.size_bytes / 1024)} KB` : "—"}
+            {sample.duration_seconds ? ` · ${sample.duration_seconds.toFixed(1)}s` : ""}
+          </p>
+        </div>
+        {url && <audio controls src={url} className="h-8 max-w-[220px]" />}
+        <Button variant="ghost" size="sm" onClick={onTranscribe} disabled={transcribing} title="Transcribe">
+          {transcribing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Volume2 className="h-4 w-4" />}
+        </Button>
+        <Button variant="ghost" size="sm" onClick={onDelete}>
+          <Trash2 className="h-4 w-4" />
+        </Button>
       </div>
-      {url && <audio controls src={url} className="h-8 max-w-[220px]" />}
-      <Button variant="ghost" size="sm" onClick={onDelete}>
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      {sample.transcript && (
+        <p className="text-xs text-muted-foreground italic border-l-2 border-border pl-2">
+          "{sample.transcript}"
+        </p>
+      )}
     </div>
   );
 }
+
