@@ -38,7 +38,7 @@ Tracking remaining work for v1 and beyond.
 - [x] `/voices/$id` — model detail
   - [x] Upload samples (drag-drop file picker, mic record) → `voice-samples/{uid}/{modelId}/...`
   - [x] Sample list with playback (signed URL), delete
-  - [ ] Transcript preview per sample (deferred — needs Whisper)
+  - [x] Transcript preview per sample (on-demand button → Whisper)
   - [x] "Train" button → server function dispatches to `RVC_ENDPOINT`, updates status
   - [x] "Test voice" — synth a phrase via `synthesizePhrase`
 - [x] Character presets (anime girl, deep villain, robotic, child, elderly, narrator, newscaster) in `src/lib/voice-presets.ts`
