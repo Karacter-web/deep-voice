@@ -7,6 +7,7 @@ import { ArrowLeft, Loader2, Mic, Square, Trash2, Upload, Volume2, Zap } from "l
 
 import { supabase } from "@/integrations/supabase/client";
 import { dispatchTraining, synthesizePhrase } from "@/lib/voices.functions";
+import { transcribeSample } from "@/lib/audio.functions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
