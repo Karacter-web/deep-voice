@@ -7,7 +7,7 @@ import { LogOut, Mic, Radio, Settings, Sparkles, Square, User } from "lucide-rea
 
 import { supabase } from "@/integrations/supabase/client";
 import { signOutClean } from "@/lib/sign-out";
-import { convertVoice, endCallSession, startCallSession, transcribeChunk } from "@/lib/audio.functions";
+import { convertVoice, endCallSession, startCallSession } from "@/lib/audio.functions";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
