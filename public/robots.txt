@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /$
+Allow: /auth
+Disallow: /studio
+Disallow: /voices
+Disallow: /profile
+Disallow: /settings
+Disallow: /api/
+
+Sitemap: https://deepcallprank.lovable.app/sitemap.xml
