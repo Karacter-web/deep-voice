@@ -54,8 +54,9 @@ Tracking remaining work for v1 and beyond.
 - [x] Consent checkbox before any session starts
 
 ## Phase 7 — Server functions & secrets
-- [x] `src/lib/audio.functions.ts` — `transcribeChunk`, `convertVoice`, `startCallSession`, `endCallSession`
+- [x] `src/lib/audio.functions.ts` — `transcribeChunk`, `transcribeSample`, `convertVoice`, `startCallSession`, `endCallSession`
 - [x] `src/lib/voices.functions.ts` — `dispatchTraining`, `synthesizePhrase`
+- [x] `src/routes/api/stream.transcribe.ts` — SSE proxy to Whisper
 - [ ] Add secrets via Lovable secret manager: `WHISPER_ENDPOINT`, `RVC_ENDPOINT`
 - [ ] Optional: `ELEVENLABS_API_KEY` fallback
 
