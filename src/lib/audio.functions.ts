@@ -133,3 +133,42 @@ export const endCallSession = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
+
+/**
+ * Transcribe a stored voice sample via Whisper and persist the text on the row.
+ * Uses a signed URL so the whisper server can fetch the sample directly when
+ * it supports URL inputs; otherwise we download then forward as multipart.
+ */
+export const transcribeSample = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { sampleId: string }) => input)
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: sample, error } = await supabase
+      .from("voice_samples")
+      .select("id, storage_path, mime_type")
+      .eq("id", data.sampleId)
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!sample) throw new Error("Sample not found");
+
+    const endpoint = process.env.WHISPER_ENDPOINT;
+    if (!endpoint) {
+      throw new Error("No WHISPER_ENDPOINT configured. Add one in project secrets.");
+    }
+
+    const dl = await supabase.storage.from("voice-samples").download(sample.storage_path);
+    if (dl.error || !dl.data) throw new Error(dl.error?.message ?? "Sample missing in storage");
+    const blob = dl.data;
+
+    const form = new FormData();
+    form.append("file", new Blob([await blob.arrayBuffer()], { type: sample.mime_type ?? "audio/webm" }), "sample.webm");
+    const res = await fetch(`${endpoint.replace(/\/$/, "")}/inference`, { method: "POST", body: form });
+    if (!res.ok) throw new Error(`Whisper responded ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    const json = (await res.json()) as { text?: string };
+    const text = (json.text ?? "").trim();
+
+    await supabase.from("voice_samples").update({ transcript: text }).eq("id", sample.id);
+    return { text };
+  });

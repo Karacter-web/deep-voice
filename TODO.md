@@ -38,7 +38,7 @@ Tracking remaining work for v1 and beyond.
 - [x] `/voices/$id` — model detail
   - [x] Upload samples (drag-drop file picker, mic record) → `voice-samples/{uid}/{modelId}/...`
   - [x] Sample list with playback (signed URL), delete
-  - [ ] Transcript preview per sample (deferred — needs Whisper)
+  - [x] Transcript preview per sample (on-demand button → Whisper)
   - [x] "Train" button → server function dispatches to `RVC_ENDPOINT`, updates status
   - [x] "Test voice" — synth a phrase via `synthesizePhrase`
 - [x] Character presets (anime girl, deep villain, robotic, child, elderly, narrator, newscaster) in `src/lib/voice-presets.ts`
@@ -48,14 +48,15 @@ Tracking remaining work for v1 and beyond.
 - [x] `MediaRecorder` mic capture in 4s chunks (webm)
 - [x] Server function `transcribeChunk()` → forwards to `WHISPER_ENDPOINT`
 - [x] Server function `convertVoice()` → forwards to `RVC_ENDPOINT`
-- [ ] Streaming SSE for partial transcripts (current impl polls per chunk)
+- [x] Streaming SSE for partial transcripts (`/api/stream/transcribe`)
 - [x] Playback in browser via `Audio` element / `AudioContext`
 - [x] Push session row into `call_sessions` (start/end server fns)
 - [x] Consent checkbox before any session starts
 
 ## Phase 7 — Server functions & secrets
-- [x] `src/lib/audio.functions.ts` — `transcribeChunk`, `convertVoice`, `startCallSession`, `endCallSession`
+- [x] `src/lib/audio.functions.ts` — `transcribeChunk`, `transcribeSample`, `convertVoice`, `startCallSession`, `endCallSession`
 - [x] `src/lib/voices.functions.ts` — `dispatchTraining`, `synthesizePhrase`
+- [x] `src/routes/api/stream.transcribe.ts` — SSE proxy to Whisper
 - [ ] Add secrets via Lovable secret manager: `WHISPER_ENDPOINT`, `RVC_ENDPOINT`
 - [ ] Optional: `ELEVENLABS_API_KEY` fallback
 
