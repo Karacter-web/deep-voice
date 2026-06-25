@@ -216,7 +216,13 @@ function VoiceDetailPage() {
                 <p className="p-4 text-sm text-muted-foreground">No samples yet.</p>
               )}
               {samplesQuery.data?.map((s) => (
-                <SampleRow key={s.id} sample={s} onDelete={() => deleteSampleMutation.mutate(s)} />
+                <SampleRow
+                  key={s.id}
+                  sample={s}
+                  onDelete={() => deleteSampleMutation.mutate(s)}
+                  onTranscribe={() => transcribeMutation.mutate(s.id)}
+                  transcribing={transcribeMutation.isPending && transcribeMutation.variables === s.id}
+                />
               ))}
             </div>
           </CardContent>
