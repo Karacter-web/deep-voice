@@ -6,10 +6,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 
 export const Route = createFileRoute("/_authenticated/voices")({
-  head: () => ({ meta: [{ title: "Voice Lab — Deep Call Prank" }] }),
+  head: () => ({
+    meta: [
+      { title: "Voice Lab — Deep Call Prank" },
+      { name: "description", content: "Train, manage, and test your voice clones." },
+      { property: "og:title", content: "Voice Lab — Deep Call Prank" },
+      { property: "og:description", content: "Train, manage, and test your voice clones." },
+    ],
+  }),
   component: VoicesPage,
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
 });
 
 const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -52,7 +63,13 @@ function VoicesPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-10">
-        {voicesQuery.isLoading && <p className="text-muted-foreground">Loading…</p>}
+        {voicesQuery.isLoading && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-36 w-full" />
+            ))}
+          </div>
+        )}
 
         {voicesQuery.data?.length === 0 && (
           <Card className="border-dashed">
