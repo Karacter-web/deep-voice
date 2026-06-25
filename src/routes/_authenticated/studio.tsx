@@ -28,7 +28,7 @@ function Studio() {
   const qc = useQueryClient();
   const { user } = Route.useRouteContext();
 
-  const transcribeFn = useServerFn(transcribeChunk);
+  
   const convertFn = useServerFn(convertVoice);
   const startFn = useServerFn(startCallSession);
   const endFn = useServerFn(endCallSession);
