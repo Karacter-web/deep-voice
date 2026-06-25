@@ -55,9 +55,19 @@ function applyTheme(theme: string) {
   root.classList.toggle("dark", isDark);
 }
 
+import { RouteError, RouteNotFound } from "@/components/route-error";
+
 export const Route = createFileRoute("/_authenticated/settings")({
-  head: () => ({ meta: [{ title: "Settings — Deep Call Prank" }] }),
+  head: () => ({
+    meta: [
+      { title: "Settings — Deep Call Prank" },
+      { name: "description", content: "Defaults for voice, STT model, theme, and account." },
+      { property: "og:title", content: "Settings — Deep Call Prank" },
+    ],
+  }),
   component: SettingsPage,
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
 });
 
 function SettingsPage() {

@@ -15,10 +15,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 
 export const Route = createFileRoute("/_authenticated/studio")({
-  head: () => ({ meta: [{ title: "Studio — Deep Call Prank" }] }),
+  head: () => ({
+    meta: [
+      { title: "Studio — Deep Call Prank" },
+      { name: "description", content: "Live voice changer: stream your mic and hear it converted." },
+      { property: "og:title", content: "Studio — Deep Call Prank" },
+      { property: "og:description", content: "Live voice changer: stream your mic and hear it converted." },
+    ],
+  }),
   component: Studio,
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
 });
 
 const CHUNK_MS = 4000;
@@ -207,18 +217,18 @@ function Studio() {
           </span>
           Deep Call Prank
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/voices"><Sparkles className="h-4 w-4" />Voice Lab</Link>
+            <Link to="/voices"><Sparkles className="h-4 w-4" /><span className="hidden sm:inline">Voice Lab</span></Link>
           </Button>
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/profile"><User className="h-4 w-4" />Profile</Link>
+            <Link to="/profile"><User className="h-4 w-4" /><span className="hidden sm:inline">Profile</span></Link>
           </Button>
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/settings"><Settings className="h-4 w-4" />Settings</Link>
+            <Link to="/settings"><Settings className="h-4 w-4" /><span className="hidden sm:inline">Settings</span></Link>
           </Button>
           <Button variant="ghost" size="sm" onClick={() => signOutClean(qc, navigate)}>
-            <LogOut className="h-4 w-4" />Sign out
+            <LogOut className="h-4 w-4" /><span className="hidden sm:inline">Sign out</span>
           </Button>
         </div>
       </header>

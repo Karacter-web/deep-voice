@@ -12,10 +12,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 
 export const Route = createFileRoute("/_authenticated/voices/new")({
-  head: () => ({ meta: [{ title: "New voice — Deep Call Prank" }] }),
+  head: () => ({
+    meta: [
+      { title: "New voice — Deep Call Prank" },
+      { name: "description", content: "Create a new voice model from samples." },
+      { property: "og:title", content: "New voice — Deep Call Prank" },
+    ],
+  }),
   component: NewVoicePage,
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
 });
 
 function NewVoicePage() {

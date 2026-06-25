@@ -12,10 +12,20 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 
 export const Route = createFileRoute("/_authenticated/voices/$id")({
-  head: () => ({ meta: [{ title: "Voice — Deep Call Prank" }] }),
+  head: () => ({
+    meta: [
+      { title: "Voice — Deep Call Prank" },
+      { name: "description", content: "Manage samples, train, and test a voice model." },
+      { property: "og:title", content: "Voice — Deep Call Prank" },
+    ],
+  }),
   component: VoiceDetailPage,
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
 });
 
 const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -156,7 +166,13 @@ function VoiceDetailPage() {
   });
 
   if (modelQuery.isLoading) {
-    return <div className="p-10 text-muted-foreground">Loading…</div>;
+    return (
+      <div className="max-w-3xl mx-auto px-6 py-10 space-y-4">
+        <Skeleton className="h-10 w-1/2" />
+        <Skeleton className="h-48 w-full" />
+        <Skeleton className="h-32 w-full" />
+      </div>
+    );
   }
   if (!modelQuery.data) {
     return <div className="p-10">Voice not found.</div>;

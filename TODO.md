@@ -69,12 +69,12 @@ Tracking remaining work for v1 and beyond.
 - [ ] Public server route `src/routes/api/public/bridge/stream.ts` with HMAC signature verify
 
 ## Phase 9 — Polish
-- [ ] Sitemap.xml + robots.txt
-- [ ] OG metadata per route
-- [ ] Empty states & loading skeletons
-- [ ] Toast notifications (sonner)
-- [ ] Mobile responsive pass
-- [ ] Error boundary on every route with loader
+- [x] Sitemap.xml + robots.txt
+- [x] OG metadata per route
+- [x] Empty states & loading skeletons
+- [x] Toast notifications (sonner)
+- [x] Mobile responsive pass
+- [x] Error boundary on every route with loader
 
 ## Phase 10 — Hardening
 - [ ] Rate limit voice-conversion server functions per user
