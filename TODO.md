@@ -57,7 +57,7 @@ Tracking remaining work for v1 and beyond.
 - [x] `src/lib/audio.functions.ts` — `transcribeChunk`, `transcribeSample`, `convertVoice`, `startCallSession`, `endCallSession`
 - [x] `src/lib/voices.functions.ts` — `dispatchTraining`, `synthesizePhrase`
 - [x] `src/routes/api/stream.transcribe.ts` — SSE proxy to Whisper
-- [ ] Add secrets via Lovable secret manager: `WHISPER_ENDPOINT`, `RVC_ENDPOINT`
+- [x] Add secrets via Lovable secret manager: `WHISPER_ENDPOINT`, `RVC_ENDPOINT`
 - [ ] Optional: `ELEVENLABS_API_KEY` fallback
 
 ## Phase 8 — Desktop call bridge (out-of-repo reference)
