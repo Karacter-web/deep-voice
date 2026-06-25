@@ -53,12 +53,19 @@ function VoiceDetailPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("voice_samples")
-        .select("id, filename, storage_path, duration_seconds, size_bytes, created_at")
+        .select("id, filename, storage_path, duration_seconds, size_bytes, transcript, created_at")
         .eq("voice_model_id", id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
+  });
+
+  const transcribeSampleFn = useServerFn(transcribeSample);
+  const transcribeMutation = useMutation({
+    mutationFn: (sampleId: string) => transcribeSampleFn({ data: { sampleId } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["voice-samples", id] }),
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const uploadMutation = useMutation({
