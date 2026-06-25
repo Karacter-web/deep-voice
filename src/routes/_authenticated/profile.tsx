@@ -11,10 +11,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 
 export const Route = createFileRoute("/_authenticated/profile")({
-  head: () => ({ meta: [{ title: "Profile — Deep Call Prank" }] }),
+  head: () => ({
+    meta: [
+      { title: "Profile — Deep Call Prank" },
+      { name: "description", content: "Edit your username, name, bio, and avatar." },
+      { property: "og:title", content: "Profile — Deep Call Prank" },
+    ],
+  }),
   component: ProfilePage,
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
 });
 
 function ProfilePage() {

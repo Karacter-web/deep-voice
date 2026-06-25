@@ -16,6 +16,8 @@ export const Route = createFileRoute("/auth")({
     meta: [
       { title: "Sign in — Deep Call Prank" },
       { name: "description", content: "Sign in to access the Voice Lab and live changer." },
+      { property: "og:title", content: "Sign in — Deep Call Prank" },
+      { property: "og:description", content: "Sign in to access the Voice Lab and live changer." },
     ],
   }),
   component: AuthPage,

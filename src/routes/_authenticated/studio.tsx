@@ -15,10 +15,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 
 export const Route = createFileRoute("/_authenticated/studio")({
-  head: () => ({ meta: [{ title: "Studio — Deep Call Prank" }] }),
+  head: () => ({
+    meta: [
+      { title: "Studio — Deep Call Prank" },
+      { name: "description", content: "Live voice changer: stream your mic and hear it converted." },
+      { property: "og:title", content: "Studio — Deep Call Prank" },
+      { property: "og:description", content: "Live voice changer: stream your mic and hear it converted." },
+    ],
+  }),
   component: Studio,
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
 });
 
 const CHUNK_MS = 4000;
