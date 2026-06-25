@@ -48,7 +48,7 @@ Tracking remaining work for v1 and beyond.
 - [x] `MediaRecorder` mic capture in 4s chunks (webm)
 - [x] Server function `transcribeChunk()` → forwards to `WHISPER_ENDPOINT`
 - [x] Server function `convertVoice()` → forwards to `RVC_ENDPOINT`
-- [ ] Streaming SSE for partial transcripts (current impl polls per chunk)
+- [x] Streaming SSE for partial transcripts (`/api/stream/transcribe`)
 - [x] Playback in browser via `Audio` element / `AudioContext`
 - [x] Push session row into `call_sessions` (start/end server fns)
 - [x] Consent checkbox before any session starts
