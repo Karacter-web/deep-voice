@@ -71,21 +71,70 @@ function Studio() {
     return btoa(s);
   }
 
+  async function streamTranscribe(blob: Blob) {
+    const { data: sess } = await supabase.auth.getSession();
+    const token = sess.session?.access_token;
+    if (!token) return;
+    const form = new FormData();
+    form.append("file", blob, "chunk.webm");
+    const res = await fetch("/api/stream/transcribe", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: form,
+    });
+    if (!res.ok || !res.body) return;
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let buf = "";
+    let partial = "";
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const events = buf.split("\n\n");
+      buf = events.pop() ?? "";
+      for (const ev of events) {
+        const lines = ev.split("\n");
+        const evName = lines.find((l) => l.startsWith("event: "))?.slice(7) ?? "";
+        const dataLine = lines.find((l) => l.startsWith("data: "))?.slice(6) ?? "";
+        if (!dataLine) continue;
+        if (evName === "partial") {
+          try {
+            const { word } = JSON.parse(dataLine) as { word: string };
+            partial += (partial ? " " : "") + word;
+            setTranscript((prev) => {
+              const next = [...prev];
+              next[next.length - 1] = partial;
+              return next;
+            });
+          } catch { /* ignore */ }
+        } else if (evName === "done") {
+          try {
+            const { text } = JSON.parse(dataLine) as { text: string };
+            if (text) {
+              setTranscript((prev) => {
+                const next = [...prev];
+                next[next.length - 1] = text;
+                return [...next, ""];
+              });
+            }
+          } catch { /* ignore */ }
+        }
+      }
+    }
+  }
+
   async function handleChunk(blob: Blob) {
     if (blob.size < 1000) return;
-    const audioBase64 = await blobToB64(blob);
-    const mimeType = blob.type || "audio/webm";
-
-    try {
-      const t = await transcribeFn({ data: { audioBase64, mimeType } });
-      if (t.text) setTranscript((prev) => [...prev, t.text]);
-    } catch (e) {
-      // Quietly surface — endpoint may be unconfigured.
-      console.warn("transcribe failed", e);
-    }
+    // Add a placeholder line that the SSE handler will fill in.
+    setTranscript((prev) => (prev.length === 0 || prev[prev.length - 1] !== "" ? [...prev, ""] : prev));
+    void streamTranscribe(blob).catch((e) => console.warn("transcribe stream failed", e));
 
     if (voiceId) {
       try {
+        const audioBase64 = await blobToB64(blob);
+        const mimeType = blob.type || "audio/webm";
         const c = await convertFn({
           data: { audioBase64, mimeType, voiceModelId: voiceId, sessionId: sessionRef.current ?? undefined },
         });
