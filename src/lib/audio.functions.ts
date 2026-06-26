@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { enforceRateLimit } from "@/lib/rate-limit";
+import { signWatermark, watermarkWav } from "@/lib/watermark";
 
 /**
  * Transcribe a short audio chunk via the self-hosted whisper.cpp server.
@@ -10,7 +12,12 @@ export const transcribeChunk = createServerFn({ method: "POST" })
   .inputValidator(
     (input: { audioBase64: string; mimeType?: string; model?: string }) => input,
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    enforceRateLimit({
+      key: `transcribeChunk:${context.userId}`,
+      limit: 60,
+      windowMs: 60_000,
+    });
     const endpoint = process.env.WHISPER_ENDPOINT;
     if (!endpoint) {
       throw new Error(
@@ -54,6 +61,11 @@ export const convertVoice = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    enforceRateLimit({
+      key: `convertVoice:${userId}`,
+      limit: 120,
+      windowMs: 60_000,
+    });
 
     const { data: model, error } = await supabase
       .from("voice_models")
@@ -85,12 +97,27 @@ export const convertVoice = createServerFn({ method: "POST" })
       const txt = await res.text();
       throw new Error(`Converter responded ${res.status}: ${txt.slice(0, 200)}`);
     }
-    const buf = await res.arrayBuffer();
+    let buf = await res.arrayBuffer();
+    const mimeType = res.headers.get("content-type") ?? "audio/wav";
+
+    // Watermark WAV output with a signed provenance token.
+    const secret = process.env.BRIDGE_HMAC_SECRET;
+    let watermark: string | null = null;
+    if (secret && mimeType.includes("wav")) {
+      watermark = signWatermark(
+        {
+          userId,
+          voiceModelId: model.id,
+          sessionId: data.sessionId,
+          issuedAt: Date.now(),
+        },
+        secret,
+      );
+      buf = watermarkWav(buf, watermark);
+    }
+
     const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
-    return {
-      audioBase64: b64,
-      mimeType: res.headers.get("content-type") ?? "audio/wav",
-    };
+    return { audioBase64: b64, mimeType, watermark };
   });
 
 /**
