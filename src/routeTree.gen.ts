@@ -19,6 +19,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as ApiStreamTranscribeRouteImport } from './routes/api/stream.transcribe'
 import { Route as AuthenticatedVoicesNewRouteImport } from './routes/_authenticated/voices.new'
 import { Route as AuthenticatedVoicesIdRouteImport } from './routes/_authenticated/voices.$id'
+import { Route as ApiPublicBridgeStreamRouteImport } from './routes/api/public/bridge/stream'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -69,6 +70,11 @@ const AuthenticatedVoicesIdRoute = AuthenticatedVoicesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedVoicesRoute,
 } as any)
+const ApiPublicBridgeStreamRoute = ApiPublicBridgeStreamRouteImport.update({
+  id: '/api/public/bridge/stream',
+  path: '/api/public/bridge/stream',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/voices/$id': typeof AuthenticatedVoicesIdRoute
   '/voices/new': typeof AuthenticatedVoicesNewRoute
   '/api/stream/transcribe': typeof ApiStreamTranscribeRoute
+  '/api/public/bridge/stream': typeof ApiPublicBridgeStreamRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/voices/$id': typeof AuthenticatedVoicesIdRoute
   '/voices/new': typeof AuthenticatedVoicesNewRoute
   '/api/stream/transcribe': typeof ApiStreamTranscribeRoute
+  '/api/public/bridge/stream': typeof ApiPublicBridgeStreamRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/_authenticated/voices/$id': typeof AuthenticatedVoicesIdRoute
   '/_authenticated/voices/new': typeof AuthenticatedVoicesNewRoute
   '/api/stream/transcribe': typeof ApiStreamTranscribeRoute
+  '/api/public/bridge/stream': typeof ApiPublicBridgeStreamRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/voices/$id'
     | '/voices/new'
     | '/api/stream/transcribe'
+    | '/api/public/bridge/stream'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/voices/$id'
     | '/voices/new'
     | '/api/stream/transcribe'
+    | '/api/public/bridge/stream'
   id:
     | '__root__'
     | '/'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/_authenticated/voices/$id'
     | '/_authenticated/voices/new'
     | '/api/stream/transcribe'
+    | '/api/public/bridge/stream'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -147,6 +159,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ApiStreamTranscribeRoute: typeof ApiStreamTranscribeRoute
+  ApiPublicBridgeStreamRoute: typeof ApiPublicBridgeStreamRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -221,6 +234,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedVoicesIdRouteImport
       parentRoute: typeof AuthenticatedVoicesRoute
     }
+    '/api/public/bridge/stream': {
+      id: '/api/public/bridge/stream'
+      path: '/api/public/bridge/stream'
+      fullPath: '/api/public/bridge/stream'
+      preLoaderRoute: typeof ApiPublicBridgeStreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ApiStreamTranscribeRoute: ApiStreamTranscribeRoute,
+  ApiPublicBridgeStreamRoute: ApiPublicBridgeStreamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

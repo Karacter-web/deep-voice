@@ -61,12 +61,12 @@ Tracking remaining work for v1 and beyond.
 - [ ] Optional: `ELEVENLABS_API_KEY` fallback
 
 ## Phase 8 — Desktop call bridge (out-of-repo reference)
-- [ ] `bridge/` Python reference implementation
-  - [ ] Mic capture → chunked POST to app's `/api/public/bridge/stream`
-  - [ ] Receive converted audio → write to virtual cable
-  - [ ] Discord bot variant (`discord.py`)
-  - [ ] Setup docs for VB-Cable (Win), BlackHole (Mac), PulseAudio loopback (Linux)
-- [ ] Public server route `src/routes/api/public/bridge/stream.ts` with HMAC signature verify
+- [x] `bridge/` Python reference implementation
+  - [x] Mic capture → chunked POST to app's `/api/public/bridge/stream` (`bridge/mic_bridge.py`)
+  - [x] Receive converted audio → write to virtual cable / default device
+  - [x] Discord bot variant (`bridge/discord_bot.py`)
+  - [x] Setup docs for VB-Cable (Win), BlackHole (Mac), PulseAudio loopback (Linux) — see `bridge/README.md`
+- [x] Public server route `src/routes/api/public/bridge/stream.ts` with HMAC signature verify (+ replay protection + per-user rate limit)
 
 ## Phase 9 — Polish
 - [x] Sitemap.xml + robots.txt
@@ -77,12 +77,13 @@ Tracking remaining work for v1 and beyond.
 - [x] Error boundary on every route with loader
 
 ## Phase 10 — Hardening
-- [ ] Rate limit voice-conversion server functions per user
-- [ ] Audit log table for sensitive actions
-- [ ] Enable Supabase **Leaked Password Protection** (Auth settings)
-- [ ] Upgrade Postgres to latest patch (Supabase dashboard → Database → Upgrades)
-- [ ] Watermark generated audio (inaudible spread-spectrum tag) for traceability
+- [x] Rate limit voice-conversion server functions per user (`src/lib/rate-limit.ts`, applied to `convertVoice`, `transcribeChunk`, and the bridge route). **Note:** in-memory per-worker limiter, not durable — back with Redis/Postgres for production.
+- [x] Audit log table for sensitive actions — SQL provided at `docs/audit-log.sql` for manual review (schema kept unchanged per user request)
+- [ ] Enable Supabase **Leaked Password Protection** (Auth settings → Password Strength) — dashboard-only
+- [ ] Upgrade Postgres to latest patch (Supabase dashboard → Database → Upgrades) — dashboard-only
+- [x] Watermark generated audio with signed provenance token (`src/lib/watermark.ts` — WAV `LIST/INFO/ICMT` chunk, HMAC over user + voice + session + issuedAt). Spread-spectrum DSP embedding remains a future upgrade.
 - [x] Add explicit consent checkbox before any call session starts
+- [x] Generated `BRIDGE_HMAC_SECRET` for signed bridge ingress
 
 ## Suggested Implementations / References
 
