@@ -1,7 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { VoiceJob } from "./voice-types";
 
-type JobKind = "clone_train" | "design_synth" | "instant_generate" | "enhance" | "diarize" | "preview";
+type JobKind = VoiceJob["kind"];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sbAny = (c: unknown) => c as any;
 
 /**
  * Insert a voice job row and kick the worker. The worker is a separate

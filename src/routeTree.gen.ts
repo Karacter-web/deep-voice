@@ -17,6 +17,7 @@ import { Route as AuthenticatedStudioRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as ApiStreamTranscribeRouteImport } from './routes/api/stream.transcribe'
+import { Route as ApiStreamSynthRouteImport } from './routes/api/stream.synth'
 import { Route as AuthenticatedVoicesNewRouteImport } from './routes/_authenticated/voices.new'
 import { Route as AuthenticatedVoicesIdRouteImport } from './routes/_authenticated/voices.$id'
 import { Route as ApiPublicBridgeStreamRouteImport } from './routes/api/public/bridge/stream'
@@ -60,6 +61,11 @@ const ApiStreamTranscribeRoute = ApiStreamTranscribeRouteImport.update({
   path: '/api/stream/transcribe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiStreamSynthRoute = ApiStreamSynthRouteImport.update({
+  id: '/api/stream/synth',
+  path: '/api/stream/synth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedVoicesNewRoute = AuthenticatedVoicesNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/voices': typeof AuthenticatedVoicesRouteWithChildren
   '/voices/$id': typeof AuthenticatedVoicesIdRoute
   '/voices/new': typeof AuthenticatedVoicesNewRoute
+  '/api/stream/synth': typeof ApiStreamSynthRoute
   '/api/stream/transcribe': typeof ApiStreamTranscribeRoute
   '/api/public/bridge/stream': typeof ApiPublicBridgeStreamRoute
 }
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/voices': typeof AuthenticatedVoicesRouteWithChildren
   '/voices/$id': typeof AuthenticatedVoicesIdRoute
   '/voices/new': typeof AuthenticatedVoicesNewRoute
+  '/api/stream/synth': typeof ApiStreamSynthRoute
   '/api/stream/transcribe': typeof ApiStreamTranscribeRoute
   '/api/public/bridge/stream': typeof ApiPublicBridgeStreamRoute
 }
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/_authenticated/voices': typeof AuthenticatedVoicesRouteWithChildren
   '/_authenticated/voices/$id': typeof AuthenticatedVoicesIdRoute
   '/_authenticated/voices/new': typeof AuthenticatedVoicesNewRoute
+  '/api/stream/synth': typeof ApiStreamSynthRoute
   '/api/stream/transcribe': typeof ApiStreamTranscribeRoute
   '/api/public/bridge/stream': typeof ApiPublicBridgeStreamRoute
 }
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/voices'
     | '/voices/$id'
     | '/voices/new'
+    | '/api/stream/synth'
     | '/api/stream/transcribe'
     | '/api/public/bridge/stream'
   fileRoutesByTo: FileRoutesByTo
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/voices'
     | '/voices/$id'
     | '/voices/new'
+    | '/api/stream/synth'
     | '/api/stream/transcribe'
     | '/api/public/bridge/stream'
   id:
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/_authenticated/voices'
     | '/_authenticated/voices/$id'
     | '/_authenticated/voices/new'
+    | '/api/stream/synth'
     | '/api/stream/transcribe'
     | '/api/public/bridge/stream'
   fileRoutesById: FileRoutesById
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiStreamSynthRoute: typeof ApiStreamSynthRoute
   ApiStreamTranscribeRoute: typeof ApiStreamTranscribeRoute
   ApiPublicBridgeStreamRoute: typeof ApiPublicBridgeStreamRoute
 }
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiStreamTranscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/stream/synth': {
+      id: '/api/stream/synth'
+      path: '/api/stream/synth'
+      fullPath: '/api/stream/synth'
+      preLoaderRoute: typeof ApiStreamSynthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/voices/new': {
       id: '/_authenticated/voices/new'
       path: '/new'
@@ -278,6 +298,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiStreamSynthRoute: ApiStreamSynthRoute,
   ApiStreamTranscribeRoute: ApiStreamTranscribeRoute,
   ApiPublicBridgeStreamRoute: ApiPublicBridgeStreamRoute,
 }
