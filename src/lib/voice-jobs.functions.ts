@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { VoiceJob } from "./voice-types";
+import type { VoiceJob, Json } from "./voice-types";
 
 type JobKind = VoiceJob["kind"];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
