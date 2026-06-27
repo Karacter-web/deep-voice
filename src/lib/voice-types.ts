@@ -1,4 +1,6 @@
-import type { Json } from "@/integrations/supabase/types";
+// Local JSON type without `| undefined` (supabase's Json includes it,
+// which TanStack's serializable validator rejects).
+export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 
 export interface VoiceProfile {
   id: string;
