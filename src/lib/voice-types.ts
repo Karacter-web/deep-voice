@@ -1,4 +1,6 @@
 import type { Json } from "@/integrations/supabase/types";
+
+export interface VoiceProfile {
   id: string;
   user_id: string;
   name: string;
