@@ -17,7 +17,7 @@ export const dispatchVoiceJob = createServerFn({ method: "POST" })
   .inputValidator((input: {
     profileId?: string;
     kind: JobKind;
-    input?: Record<string, unknown>;
+    input?: Json;
   }) => {
     if (!input?.kind) throw new Error("kind is required");
     return input;
@@ -39,7 +39,7 @@ export const dispatchVoiceJob = createServerFn({ method: "POST" })
     // Don't await — the dispatcher should return quickly. Worker reads its
     // own auth context off the service role inside.
     void runOneVoiceJob({ data: { jobId: (row as { id: string }).id } });
-    return row as Record<string, unknown>;
+    return row as Json;
   });
 
 /**
@@ -61,7 +61,7 @@ export const runOneVoiceJob = createServerFn({ method: "POST" })
     if (error || !job) return { ok: false, error: error?.message ?? "missing job" };
     const j = job as {
       id: string; user_id: string; profile_id: string | null;
-      kind: JobKind; status: string; input: Record<string, unknown>;
+      kind: JobKind; status: string; input: Json;
       attempts: number;
     };
     if (j.status !== "queued") return { ok: true, skipped: true };
@@ -100,7 +100,7 @@ export const runOneVoiceJob = createServerFn({ method: "POST" })
     }
   });
 
-async function runByKind(kind: JobKind, input: Record<string, unknown>, job: { profile_id: string | null; user_id: string }) {
+async function runByKind(kind: JobKind, input: Json, job: { profile_id: string | null; user_id: string }) {
   const xtts = process.env.HF_XTTS_SPACE_URL;
   const enhance = process.env.HF_ENHANCE_SPACE_URL;
   const diar = process.env.HF_DIAR_SPACE_URL;

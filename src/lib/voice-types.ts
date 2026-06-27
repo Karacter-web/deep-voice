@@ -13,8 +13,8 @@ export interface VoiceProfile {
   gender: string | null;
   age: string | null;
   style: string | null;
-  params: Record<string, unknown>;
-  artifacts: Record<string, unknown>;
+  params: Json;
+  artifacts: Json;
   preview_path: string | null;
   is_public: boolean;
   created_at: string;
@@ -27,8 +27,8 @@ export interface VoiceJob {
   profile_id: string | null;
   kind: "clone_train" | "design_synth" | "instant_generate" | "enhance" | "diarize" | "preview";
   status: "queued" | "running" | "succeeded" | "failed" | "cancelled";
-  input: Record<string, unknown>;
-  result: Record<string, unknown>;
+  input: Json;
+  result: Json;
   error: string | null;
   progress: number;
   attempts: number;
