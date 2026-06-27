@@ -57,11 +57,12 @@ export const Route = createFileRoute("/api/stream/synth")({
 
             try {
               for (const ch of chunks) {
-                const { data: ok, error } = await sb.rpc("consume_voice_quota", {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const { data: ok, error } = await (sb as any).rpc("consume_voice_quota", {
                   _user_id: userId,
                   _chars: ch.text.length,
                   _seconds: 0,
-                } as never);
+                });
                 if (error) { send("error", { message: error.message }); break; }
                 if (!ok) { send("error", { message: "Monthly character quota exceeded" }); break; }
 
