@@ -17,7 +17,7 @@ export const dispatchVoiceJob = createServerFn({ method: "POST" })
   .inputValidator((input: {
     profileId?: string;
     kind: JobKind;
-    input?: Json;
+    input?: { [k: string]: Json };
   }) => {
     if (!input?.kind) throw new Error("kind is required");
     return input;
@@ -61,7 +61,7 @@ export const runOneVoiceJob = createServerFn({ method: "POST" })
     if (error || !job) return { ok: false, error: error?.message ?? "missing job" };
     const j = job as {
       id: string; user_id: string; profile_id: string | null;
-      kind: JobKind; status: string; input: Json;
+      kind: JobKind; status: string; input: { [k: string]: Json };
       attempts: number;
     };
     if (j.status !== "queued") return { ok: true, skipped: true };
@@ -100,7 +100,7 @@ export const runOneVoiceJob = createServerFn({ method: "POST" })
     }
   });
 
-async function runByKind(kind: JobKind, input: Json, job: { profile_id: string | null; user_id: string }) {
+async function runByKind(kind: JobKind, input: { [k: string]: Json }, job: { profile_id: string | null; user_id: string }) {
   const xtts = process.env.HF_XTTS_SPACE_URL;
   const enhance = process.env.HF_ENHANCE_SPACE_URL;
   const diar = process.env.HF_DIAR_SPACE_URL;
