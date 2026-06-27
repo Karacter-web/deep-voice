@@ -100,3 +100,23 @@ Tracking remaining work for v1 and beyond.
 - Telegram userbots violate TOS. We document the approach but ship the Discord-bot route only.
 - WhatsApp has no official voice API; only the virtual-mic + WhatsApp Desktop route works.
 - We never proxy a user's call audio through our servers without explicit consent recorded in `call_sessions.metadata`.
+
+## Phase 11 — Voice Studio (Pass A: schema + server) ✅
+- [x] Schema staged at `docs/voice-studio-schema.sql` — apply manually in Supabase SQL editor:
+  - `voice_profiles`, `voice_embeddings` (pgvector, 192-d), `voice_jobs`, `voice_usage_logs`, `voice_quotas`
+  - `ensure_voice_quota` + `consume_voice_quota` SQL helpers (security definer)
+  - RLS owner-only policies + `service_role` grants
+  - `voice_jobs` added to `supabase_realtime` publication
+- [x] `src/lib/voice-types.ts` — `VoiceProfile`, `VoiceJob`, `VoiceQuota`, local `Json` type
+- [x] `src/lib/voice-profiles.functions.ts` — CRUD: `listVoiceProfiles`, `getVoiceProfile`, `createVoiceProfile`, `updateVoiceProfile`, `deleteVoiceProfile`, `getVoiceQuota`
+- [x] `src/lib/voice-jobs.functions.ts` — `dispatchVoiceJob` + `runOneVoiceJob` worker. Stubs `clone_train` / `design_synth` / `instant_generate` / `enhance` / `diarize` / `preview` when HF endpoints missing. Instant mode uses Lovable AI Gateway (`google/gemini-2.5-flash`) to derive voice params from a text prompt.
+- [x] `src/lib/smart-chunker.ts` — sentence-aware chunker for streaming TTS
+- [x] `src/routes/api/stream.synth.ts` — SSE TTS endpoint, per-chunk quota enforcement via `consume_voice_quota`, usage logged to `voice_usage_logs`. Emits silence stubs when `HF_XTTS_SPACE_URL` is unset.
+- [ ] **Pending user action**: run `docs/voice-studio-schema.sql` in Supabase SQL editor before Pass B UI ships.
+
+## Phase 12 — Voice Studio (Pass B: React UI) — pending
+- [ ] `/studio/voices` library + grid
+- [ ] `CreateVoiceModal` (Clone / Design / Instant tabs)
+- [ ] `VoiceEditor` detail page (preview, edit, archive)
+- [ ] Hooks: `useVoiceLibrary`, `useVoiceStream`, `useVoiceJobStatus` (Supabase Realtime), `useQuota`
+- [ ] AudioContext gapless playback for SSE chunks
