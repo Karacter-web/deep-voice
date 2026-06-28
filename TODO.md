@@ -114,9 +114,9 @@ Tracking remaining work for v1 and beyond.
 - [x] `src/routes/api/stream.synth.ts` — SSE TTS endpoint, per-chunk quota enforcement via `consume_voice_quota`, usage logged to `voice_usage_logs`. Emits silence stubs when `HF_XTTS_SPACE_URL` is unset.
 - [ ] **Pending user action**: run `docs/voice-studio-schema.sql` in Supabase SQL editor before Pass B UI ships.
 
-## Phase 12 — Voice Studio (Pass B: React UI) — pending
-- [ ] `/studio/voices` library + grid
-- [ ] `CreateVoiceModal` (Clone / Design / Instant tabs)
-- [ ] `VoiceEditor` detail page (preview, edit, archive)
-- [ ] Hooks: `useVoiceLibrary`, `useVoiceStream`, `useVoiceJobStatus` (Supabase Realtime), `useQuota`
-- [ ] AudioContext gapless playback for SSE chunks
+## Phase 12 — Voice Studio (Pass B: React UI) ✅
+- [x] `/studio/voices` library grid + monthly-usage card (`src/routes/_authenticated/studio_.voices.tsx`)
+- [x] `CreateVoiceModal` with Clone / Design / Instant tabs (`src/components/voice-studio/create-voice-modal.tsx`)
+- [x] `/studio/voices/$id` editor — details, live job status, streaming preview, archive/delete (`src/routes/_authenticated/studio_.voices.$id.tsx`)
+- [x] Hooks (`src/hooks/use-voice-studio.ts`): `useVoiceLibrary`, `useQuota`, `useVoiceJobStatus` (Supabase Realtime on `voice_jobs`), `useVoiceStream` (SSE + AudioContext gapless playback)
+- [x] Routes use `studio_.voices*` trailing-underscore to opt out of the live-changer `/studio` layout
