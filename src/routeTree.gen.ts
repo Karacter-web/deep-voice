@@ -20,7 +20,9 @@ import { Route as ApiStreamTranscribeRouteImport } from './routes/api/stream.tra
 import { Route as ApiStreamSynthRouteImport } from './routes/api/stream.synth'
 import { Route as AuthenticatedVoicesNewRouteImport } from './routes/_authenticated/voices.new'
 import { Route as AuthenticatedVoicesIdRouteImport } from './routes/_authenticated/voices.$id'
+import { Route as AuthenticatedStudioVoicesRouteImport } from './routes/_authenticated/studio_.voices'
 import { Route as ApiPublicBridgeStreamRouteImport } from './routes/api/public/bridge/stream'
+import { Route as AuthenticatedStudioVoicesIdRouteImport } from './routes/_authenticated/studio_.voices.$id'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -76,11 +78,23 @@ const AuthenticatedVoicesIdRoute = AuthenticatedVoicesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedVoicesRoute,
 } as any)
+const AuthenticatedStudioVoicesRoute =
+  AuthenticatedStudioVoicesRouteImport.update({
+    id: '/studio_/voices',
+    path: '/studio/voices',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicBridgeStreamRoute = ApiPublicBridgeStreamRouteImport.update({
   id: '/api/public/bridge/stream',
   path: '/api/public/bridge/stream',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedStudioVoicesIdRoute =
+  AuthenticatedStudioVoicesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedStudioVoicesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,10 +103,12 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/studio': typeof AuthenticatedStudioRoute
   '/voices': typeof AuthenticatedVoicesRouteWithChildren
+  '/studio/voices': typeof AuthenticatedStudioVoicesRouteWithChildren
   '/voices/$id': typeof AuthenticatedVoicesIdRoute
   '/voices/new': typeof AuthenticatedVoicesNewRoute
   '/api/stream/synth': typeof ApiStreamSynthRoute
   '/api/stream/transcribe': typeof ApiStreamTranscribeRoute
+  '/studio/voices/$id': typeof AuthenticatedStudioVoicesIdRoute
   '/api/public/bridge/stream': typeof ApiPublicBridgeStreamRoute
 }
 export interface FileRoutesByTo {
@@ -102,10 +118,12 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/studio': typeof AuthenticatedStudioRoute
   '/voices': typeof AuthenticatedVoicesRouteWithChildren
+  '/studio/voices': typeof AuthenticatedStudioVoicesRouteWithChildren
   '/voices/$id': typeof AuthenticatedVoicesIdRoute
   '/voices/new': typeof AuthenticatedVoicesNewRoute
   '/api/stream/synth': typeof ApiStreamSynthRoute
   '/api/stream/transcribe': typeof ApiStreamTranscribeRoute
+  '/studio/voices/$id': typeof AuthenticatedStudioVoicesIdRoute
   '/api/public/bridge/stream': typeof ApiPublicBridgeStreamRoute
 }
 export interface FileRoutesById {
@@ -117,10 +135,12 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/studio': typeof AuthenticatedStudioRoute
   '/_authenticated/voices': typeof AuthenticatedVoicesRouteWithChildren
+  '/_authenticated/studio_/voices': typeof AuthenticatedStudioVoicesRouteWithChildren
   '/_authenticated/voices/$id': typeof AuthenticatedVoicesIdRoute
   '/_authenticated/voices/new': typeof AuthenticatedVoicesNewRoute
   '/api/stream/synth': typeof ApiStreamSynthRoute
   '/api/stream/transcribe': typeof ApiStreamTranscribeRoute
+  '/_authenticated/studio_/voices/$id': typeof AuthenticatedStudioVoicesIdRoute
   '/api/public/bridge/stream': typeof ApiPublicBridgeStreamRoute
 }
 export interface FileRouteTypes {
@@ -132,10 +152,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/studio'
     | '/voices'
+    | '/studio/voices'
     | '/voices/$id'
     | '/voices/new'
     | '/api/stream/synth'
     | '/api/stream/transcribe'
+    | '/studio/voices/$id'
     | '/api/public/bridge/stream'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -145,10 +167,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/studio'
     | '/voices'
+    | '/studio/voices'
     | '/voices/$id'
     | '/voices/new'
     | '/api/stream/synth'
     | '/api/stream/transcribe'
+    | '/studio/voices/$id'
     | '/api/public/bridge/stream'
   id:
     | '__root__'
@@ -159,10 +183,12 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/studio'
     | '/_authenticated/voices'
+    | '/_authenticated/studio_/voices'
     | '/_authenticated/voices/$id'
     | '/_authenticated/voices/new'
     | '/api/stream/synth'
     | '/api/stream/transcribe'
+    | '/_authenticated/studio_/voices/$id'
     | '/api/public/bridge/stream'
   fileRoutesById: FileRoutesById
 }
@@ -254,12 +280,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedVoicesIdRouteImport
       parentRoute: typeof AuthenticatedVoicesRoute
     }
+    '/_authenticated/studio_/voices': {
+      id: '/_authenticated/studio_/voices'
+      path: '/studio/voices'
+      fullPath: '/studio/voices'
+      preLoaderRoute: typeof AuthenticatedStudioVoicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/bridge/stream': {
       id: '/api/public/bridge/stream'
       path: '/api/public/bridge/stream'
       fullPath: '/api/public/bridge/stream'
       preLoaderRoute: typeof ApiPublicBridgeStreamRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/studio_/voices/$id': {
+      id: '/_authenticated/studio_/voices/$id'
+      path: '/$id'
+      fullPath: '/studio/voices/$id'
+      preLoaderRoute: typeof AuthenticatedStudioVoicesIdRouteImport
+      parentRoute: typeof AuthenticatedStudioVoicesRoute
     }
   }
 }
@@ -277,11 +317,26 @@ const AuthenticatedVoicesRouteChildren: AuthenticatedVoicesRouteChildren = {
 const AuthenticatedVoicesRouteWithChildren =
   AuthenticatedVoicesRoute._addFileChildren(AuthenticatedVoicesRouteChildren)
 
+interface AuthenticatedStudioVoicesRouteChildren {
+  AuthenticatedStudioVoicesIdRoute: typeof AuthenticatedStudioVoicesIdRoute
+}
+
+const AuthenticatedStudioVoicesRouteChildren: AuthenticatedStudioVoicesRouteChildren =
+  {
+    AuthenticatedStudioVoicesIdRoute: AuthenticatedStudioVoicesIdRoute,
+  }
+
+const AuthenticatedStudioVoicesRouteWithChildren =
+  AuthenticatedStudioVoicesRoute._addFileChildren(
+    AuthenticatedStudioVoicesRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStudioRoute: typeof AuthenticatedStudioRoute
   AuthenticatedVoicesRoute: typeof AuthenticatedVoicesRouteWithChildren
+  AuthenticatedStudioVoicesRoute: typeof AuthenticatedStudioVoicesRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -289,6 +344,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStudioRoute: AuthenticatedStudioRoute,
   AuthenticatedVoicesRoute: AuthenticatedVoicesRouteWithChildren,
+  AuthenticatedStudioVoicesRoute: AuthenticatedStudioVoicesRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
