@@ -21,7 +21,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { createVoiceProfile } from "@/lib/voice-profiles.functions";
 import { dispatchVoiceJob } from "@/lib/voice-jobs.functions";
-import { createClient } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { VoiceSettingsSliders } from "./VoiceSettingsSliders";
 import { useVoiceLibrary } from "@/hooks/useVoiceLibrary";
 
@@ -123,7 +123,6 @@ function CloneTab({
       } as Parameters<typeof createVoiceProfile>[0]["data"]);
 
       // Upload samples to Supabase Storage
-      const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       await Promise.all(
         files.map((file) =>
