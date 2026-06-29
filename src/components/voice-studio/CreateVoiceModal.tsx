@@ -21,7 +21,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { createVoiceProfile } from "@/lib/voice-profiles.functions";
 import { dispatchVoiceJob } from "@/lib/voice-jobs.functions";
-import { createClient } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { VoiceSettingsSliders } from "./VoiceSettingsSliders";
 import { useVoiceLibrary } from "@/hooks/useVoiceLibrary";
 
