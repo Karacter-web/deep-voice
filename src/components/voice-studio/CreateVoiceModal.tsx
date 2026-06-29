@@ -123,7 +123,6 @@ function CloneTab({
       } as Parameters<typeof createVoiceProfile>[0]["data"]);
 
       // Upload samples to Supabase Storage
-      const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       await Promise.all(
         files.map((file) =>
