@@ -120,3 +120,58 @@ Tracking remaining work for v1 and beyond.
 - [x] `/studio/voices/$id` editor — details, live job status, streaming preview, archive/delete (`src/routes/_authenticated/studio_.voices.$id.tsx`)
 - [x] Hooks (`src/hooks/use-voice-studio.ts`): `useVoiceLibrary`, `useQuota`, `useVoiceJobStatus` (Supabase Realtime on `voice_jobs`), `useVoiceStream` (SSE + AudioContext gapless playback)
 - [x] Routes use `studio_.voices*` trailing-underscore to opt out of the live-changer `/studio` layout
+
+## Phase 13 — Create Voice UX (Clone samples) ✅
+- [x] Drag/drop + file-picker upload in Clone tab (MP3/WAV/M4A/WEBM/FLAC, 25MB cap)
+- [x] In-browser mic recording via `MediaRecorder` (webm/opus)
+- [x] Enforce 5–15 samples before enabling "Create voice"
+- [x] Per-sample inline audio player + remove button
+- [x] Upload to `voice-samples/{uid}/{profileId}/…` and pass `sample_paths` into `clone_train`
+
+## Phase 14 — Sample quality & guidance (next)
+- [ ] Client-side audio validation: duration (min 3s / max 30s per clip), sample rate ≥ 16 kHz, mono check
+- [ ] Loudness normalization preview (Web Audio `AnalyserNode` RMS + peak meter while recording)
+- [ ] Auto-trim leading/trailing silence before upload (VAD via `@ricky0123/vad-web` or simple energy gate)
+- [ ] Waveform thumbnail per sample (wavesurfer.js or custom canvas)
+- [ ] Prompt user with a scripted read-aloud passage (phonetically balanced, ~30s) to hit coverage
+- [ ] Quality score badge per clip (SNR estimate, clipping detector, background-noise warning)
+- [ ] Resumable/chunked uploads with progress bars (tus-js-client or Supabase resumable uploads)
+- [ ] Server-side re-encode to 24 kHz mono WAV via HF enhance space before training
+
+## Phase 15 — Voice Studio polish
+- [ ] Bulk sample management on `/studio/voices/$id` (add/replace/delete after creation, retrain button)
+- [ ] "Regenerate preview" with custom text on the profile page
+- [ ] Compare A/B previews between two profiles side-by-side
+- [ ] Tag / favorite / search voices in the library
+- [ ] Import from URL (YouTube/podcast clip) with an explicit "I have rights to this audio" checkbox
+- [ ] Public voice marketplace (opt-in `is_public`, browse gallery, clone count)
+- [ ] Per-profile pinned default settings (pitch, speed, style) applied to streaming synth
+
+## Phase 16 — Realtime & platform
+- [ ] Replace in-memory rate limiter with Postgres-backed token bucket (durable across workers)
+- [ ] WebRTC path for live changer (lower latency than MediaRecorder 4s chunks)
+- [ ] Barge-in / interrupt handling on streaming synth
+- [ ] Multi-speaker diarized playback (route each speaker to a different voice)
+- [ ] Background job queue via `pg_cron` hitting `/api/public/run-jobs` (retry + dead-letter)
+- [ ] Webhook out on job state changes (`voice_jobs.status`)
+
+## Phase 17 — Safety, provenance, compliance
+- [ ] Mandatory consent recording: user must record themselves saying a one-time challenge phrase before cloning any voice (liveness + intent proof)
+- [ ] Deepfake watermark verification tool page (`/verify` — upload audio, extract HMAC token)
+- [ ] Blocklist of public-figure voice fingerprints (embedding similarity check against banlist before training)
+- [ ] Per-user daily generation cap + abuse-report endpoint
+- [ ] GDPR export/delete: single-click account data dump (profiles, samples, jobs, usage)
+- [ ] Audit-log UI at `/settings/audit` reading `docs/audit-log.sql` table
+
+## Phase 18 — Billing & tiers
+- [ ] Stripe integration for tier upgrades (free / pro / studio) driving `voice_quotas.tier`
+- [ ] Usage dashboard (chars/seconds over time, per-voice breakdown)
+- [ ] Overage handling — soft cap with grace or hard stop per tier
+- [ ] Prepaid credit packs for one-off heavy jobs (enhance, diarize)
+
+## Phase 19 — DX & ops
+- [ ] Playwright E2E: signup → create clone voice → stream preview
+- [ ] Vitest unit tests for `smart-chunker`, `rate-limit`, `watermark`
+- [ ] Sentry (or equivalent) wiring in `error-capture.ts`
+- [ ] Structured logging with request IDs across server functions
+- [ ] Storybook for `voice-studio/*` components
