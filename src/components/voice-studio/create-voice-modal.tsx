@@ -96,10 +96,8 @@ export function CreateVoiceModal({ open, onOpenChange, onCreated }: Props) {
       mr.onstop = () => {
         const blob = new Blob(chunks, { type: mime || "audio/webm" });
         const file = new File([blob], `recording-${Date.now()}.webm`, { type: blob.type });
-        setSamples((prev) => [
-          ...prev,
-          { id: crypto.randomUUID(), file, url: URL.createObjectURL(blob), source: "record" },
-        ].slice(0, MAX_SAMPLES));
+        const rec: Sample = { id: crypto.randomUUID(), file, url: URL.createObjectURL(blob), source: "record" };
+        setSamples((prev) => [...prev, rec].slice(0, MAX_SAMPLES));
         stream.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
       };
